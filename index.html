@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Todo</title>
+</head>
+<body>
+    <div id="app">
+        <h1>Todo App</h1>
+        <!-- event modifier : keyup.enter -->
+        <input
+            type="text"
+            v-model="inputText"
+            v-on:keyup.enter="addItem">
+        <button
+            v-on:click="fetchItems">add</button>
+        <div>
+            <ul>
+                <li v-for="(todoItem, index) in todoItems">
+                    {{ todoItem }}
+                    <button v-on:click="removeItem(todoItem, index)">remove</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        new Vue({
+            created: function() {
+                // lifecycle
+                // instance가 생성됐을 때, 하단 코드가 실행
+                // https://vuejs.org/v2/guide/instance.html#Lifecycle-Diagram
+                // 자연스럽게 화면에 뜰 때 한번 fetchItems() 돌아감
+                this.fetchItems();
+            },
+            methods: {
+                addItem: function(event) {
+//                    if (event.keyCode === 13) {
+                    //console.log(event);
+                    var value = this.inputText;
+                    localStorage.setItem(value, value);
+                    this.inputText = '';
+                    this.todoItems.push(value);
+//                    }
+                },
+                fetchItems: function() {
+                    for (var i = 0; i < localStorage.length; i++) {
+                        var value = localStorage.key(i);
+                        console.log(value);
+                        console.log(this);
+                        this.todoItems.push(value);
+                    }
+                },
+                removeItem: function(todoItem, index) {
+                    // 특정 item 클릭 시 삭제
+                    // axios.delete(todoItem, index);
+                    console.log(todoItem, index);
+                    this.todoItems.splice(index, 1);
+                    localStorage.removeItem(todoItem);
+                }
+            },
+            el: '#app',
+            data: {
+                inputText: '',
+                todoItems: []
+            },
+            
+        })
+    </script>
+</body>
+</html>
